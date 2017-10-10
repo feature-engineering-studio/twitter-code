@@ -9,20 +9,20 @@ output: html_document
 library(ROAuth)
 library(twitteR)
 
-api_key <- 
+api_key <- "6bd9o3Jtos413E620dtQcnaUq"
 
-api_secret <- 
+api_secret <- "fkA88iPSDBoMDiZfRI4bUmLdug9RBYBIOTiIZ9cdpdY9TvRLBM"
 
-access_token <- 
+access_token <- "95831171-q3bMDuXueoPncMwiSDlmh8xfmfuyvWU9rCS60X9VQ"
 
-access_token_secret <- 
+access_token_secret <- "7tyGqiyJ4CXTsU2e92N6sXyQ4YuHi9EbIrnNCIIsWntE8"
 
 setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 ```
 
 #Download Tweets
 ```{r}
-TL <- searchTwitter("educational data mining", n=50, since='2017-10-01', until='2016-10-08')
+TL <- searchTwitter("educational data mining", n=50, since='2017-10-01', until='2017-10-08')
 TL <- do.call("rbind", lapply(TL, as.data.frame))
 ```
 
@@ -31,5 +31,5 @@ counts=table(TL$screenName)
 barplot(counts, las=2)
 
 #By time of day
-hist(TL$created, breaks = "d")
+hist(TL$created, breaks = "d", col = "579")
 ```
