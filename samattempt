@@ -1,0 +1,12 @@
+api_key <- 'jkbe7IOiP8ueiykQwFd6fdIQ0'
+api_secret<-''
+access_token<-''
+access_token_secret<-'f9VTbkgx3iiS16Pm8g85SXeQ2wZYSlsr0hiRLSTPguEcQ'
+setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+tweets = searchTwitter("edtech")
+tweets <- do.call("rbind", lapply(tweets, as.data.frame))
+View(tweets)
+counts=table(tweets$screenName)
+barplot(counts, las=2)
+hist(tweets$created, breaks = "d")
+hist(tweets$retweetCount)
