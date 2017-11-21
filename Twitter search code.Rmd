@@ -4,32 +4,99 @@ author: "Charles Lang"
 date: "September 19, 2016"
 output: html_document
 ---
-
+#setup twitter API
 ```{r}
 library(ROAuth)
 library(twitteR)
 
-api_key <- 
+api_key <- "wdeEI5MaFa6tvLJPFK6LTlQSE"
 
-api_secret <- 
+api_secret <- "xC5Me3k4uaWH5uiz5N2wN7gJbpwebvYmFZEQhRFsLrYqWX1k52"
 
-access_token <- 
+access_token <- "90281842-563aMzb4w1rNlbjt5OL841Q00rcc1a6gne5HPgMuP"
 
-access_token_secret <- 
+access_token_secret <- "LTp4ohJ6ZeJ6Hn5E3iae0Ha8EcCKkw1W1loTwTwM89fGh"
 
 setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
 ```
 
 #Download Tweets
 ```{r}
-TL <- searchTwitter("educational data mining", n=50, since='2017-10-01', until='2016-10-08')
-TL <- do.call("rbind", lapply(TL, as.data.frame))
+AW <- searchTwitter("astorwines", n=100, since='2017-11-10', until='2017-11-20')
+AW <- do.call("rbind", lapply(AW, as.data.frame))
 ```
-
+#visualize barplots
 ```{r}
 counts=table(TL$screenName)
 barplot(counts, las=2)
 
 #By time of day
 hist(TL$created, breaks = "d")
+```
+#work on attaching new tweets to existing 
+```{r}
+library(cronR)
+library(dplyr)
+
+end_pull=(Sys.Date())
+start_pull=(end_pull-2)
+
+AW2 <- searchTwitter("astorwines", n=100, since=as.character(start_pull), until=as.character(end_pull))
+AW2 <- do.call("rbind", lapply(AW2, as.data.frame))
+AW <- dplyr::bind_rows(AW, AW2)
+AW <- unique(AW, incomparables = FALSE)
+ 
+```
+
+
+#code for instance with updating via cronr
+```{r}
+#here's my code from the attempt to have the virtual instance update the results every day (plus the cronR job, of course, which isn't in the code but hopefully runs?)
+
+#set up Twitter API
+
+#install.packages(ROAuth, twitteR, cronR, dplyr, shinyFiles)
+#install.packages(c("ROAuth", "twitteR", "cronR", "dplyr", "shinyFiles"))
+
+library(ROAuth)
+library(twitteR)
+
+api_key <- "wdeEI5MaFa6tvLJPFK6LTlQSE"
+
+api_secret <- "xC5Me3k4uaWH5uiz5N2wN7gJbpwebvYmFZEQhRFsLrYqWX1k52"
+
+access_token <- "90281842-563aMzb4w1rNlbjt5OL841Q00rcc1a6gne5HPgMuP"
+
+access_token_secret <- "LTp4ohJ6ZeJ6Hn5E3iae0Ha8EcCKkw1W1loTwTwM89fGh"
+
+setup_twitter_oauth(api_key, api_secret, access_token, access_token_secret)
+
+
+#set up initial tweet pull(s)
+
+AW <- searchTwitter("astorwines", n=100, since='2017-11-10', until='2017-11-20')
+AW <- do.call("rbind", lapply(AW, as.data.frame))
+
+JB <- searchTwitter("jacobbrody", n=100, since='2017-11-10', until='2017-11-20')
+JB <- do.call("rbind", lapply(JB, as.data.frame))
+
+
+#set up daily pull updates
+
+library(cronR)
+library(dplyr)
+
+end_pull=(Sys.Date())
+start_pull=(end_pull-2)
+
+AW2 <- searchTwitter("astorwines", n=100, since=as.character(start_pull), until=as.character(end_pull))
+AW2 <- do.call("rbind", lapply(AW2, as.data.frame))
+AW <- dplyr::bind_rows(AW, AW2)
+AW <- unique(AW, incomparables = FALSE)
+
+JB2 <- searchTwitter("jacobbrody", n=100, since=as.character(start_pull), until=as.character(end_pull))
+JB2 <- do.call("rbind", lapply(JB2, as.data.frame))
+JB <- dplyr::bind_rows(JB, JB2)
+JB <- unique(JB, incomparables = FALSE)
+
 ```
